@@ -1,0 +1,38 @@
+{
+  "name": "@everlutionsk/ajaxcom",
+  "version": "1.0.1",
+  "description": "Ajaxcom JS library",
+  "main": "dist/ajaxcom.min.js",
+  "scripts": {
+    "build": "webpack --config=./webpack.production.js",
+    "watch": "webpack --config=./webpack.development.js"
+  },
+  "contributors": [
+    {
+      "name": "Ivan Barlog",
+      "email": "ivan.barlog@everlution.sk"
+    },
+    {
+      "name": "Miroslav Demovic",
+      "email": "miroslav.demovic@everlution.sk"
+    },
+    {
+      "name": "Tomas Szabo",
+      "email": "tomas.szabo@everlution.sk"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/everlutionsk/ajaxcom-js.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "awesome-typescript-loader": "^3.2.3",
+    "typescript": "^2.5.2",
+    "uglifyjs-webpack-plugin": "^0.4.6",
+    "webpack": "^3.5.5"
+  },
+  "files": [
+    "dist"
+  ]
+}
