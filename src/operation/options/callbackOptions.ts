@@ -1,4 +1,4 @@
-export interface CallbackOptions {
+export interface ICallbackOptions {
     callFunction: string;
     params?: object;
 }

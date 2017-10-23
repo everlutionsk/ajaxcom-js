@@ -1,28 +1,45 @@
-import {AjaxOptions} from "../options/ajaxOptions";
-import {FetchOptions} from "../options/fetchOptions";
+import {IAjaxOptions} from "../options/ajaxOptions";
+import {IFetchOptions} from "../options/fetchOptions";
+import {IOptions} from "../options/options";
 import {request} from "./request";
-import {Options} from "../options/options";
 
-export function toHandleSubmit(options?: Partial<Options & AjaxOptions>) {
+export function toHandleSubmit(options?: Partial<IOptions & IAjaxOptions>) {
     return (event: Event) => {
-        const form = event.srcElement as HTMLFormElement;
+        const form = event.target as HTMLFormElement;
 
-        if (false === form.matches(options.formsSelector)) return;
-        if (form.tagName.toUpperCase() !== 'FORM') return;
+        if (false === form.matches(options.formsSelector)) { return; }
+        if (form.tagName.toUpperCase() !== "FORM") { return; }
         event.preventDefault();
 
-        const formData: any = new FormData(form);
-        let body = form.method.toUpperCase() === 'GET'
-            ? [...formData.entries()].map(pair => `${encodeURIComponent(pair[0])}=${pair[1]}`).join('&')
-            : formData;
-
+        const formData = new FormData(form);
         const fetchOptions = {
             ...options,
-            url: form.action,
             method: form.method,
-            body: body,
-        } as Partial<AjaxOptions & FetchOptions>;
+            url: form.action,
+        };
 
-        request(fetchOptions);
-    }
+        request(form.method.toUpperCase() === "GET"
+            ? fetchOptionsForGet(formData, fetchOptions)
+            : fetchOptionsForPost(formData, fetchOptions),
+        );
+    };
+}
+
+type SubmitOptions = Partial<IAjaxOptions & IFetchOptions>;
+
+function fetchOptionsForPost(formData: FormData, fetchOptions: SubmitOptions): SubmitOptions {
+    return {
+        ...fetchOptions,
+        body: formData,
+    };
+}
+
+function fetchOptionsForGet(formData: any, fetchOptions: SubmitOptions): SubmitOptions {
+    const query = [...formData.entries()].map((pair) => `${encodeURIComponent(pair[0])}=${pair[1]}`).join("&");
+    const glue = fetchOptions.url.indexOf("?") === -1 ? "?" : "&";
+
+    return {
+        ...fetchOptions,
+        url: [fetchOptions.url, glue, query].join(),
+    };
 }

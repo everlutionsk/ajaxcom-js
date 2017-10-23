@@ -1,9 +1,9 @@
-import {Options} from "./options";
-import {AjaxOptions} from "./ajaxOptions";
-import {ChangeUrlOptions} from "../operation/options/changeUrlOptions";
+import {IChangeUrlOptions} from "../operation/options/changeUrlOptions";
+import {IAjaxOptions} from "./ajaxOptions";
+import {IOptions} from "./options";
 
-export interface HistoryOptions {
+export interface IHistoryOptions {
     scrollTo: number;
-    ajaxcomOptions: Partial<Options & AjaxOptions>;
-    options: ChangeUrlOptions;
+    ajaxcomOptions: Partial<IOptions & IAjaxOptions>;
+    options: IChangeUrlOptions;
 }

@@ -1,41 +1,40 @@
-import {AjaxOptions} from "../options/ajaxOptions";
-import {FetchOptions} from "../options/fetchOptions";
-import {OperationOptions} from "../operation/options/operationOptions";
 import {handleCallback} from "../operation/callback";
 import {handleChangeUrl} from "../operation/changeUrl";
 import {handleContainer} from "../operation/container";
+import {IOperationOptions} from "../operation/options/operationOptions";
+import {IAjaxOptions} from "../options/ajaxOptions";
+import {IFetchOptions} from "../options/fetchOptions";
 
-export function fetchOperations(options: Partial<AjaxOptions & FetchOptions>): Promise<Response> {
+export function fetchOperations(options: Partial<IAjaxOptions & IFetchOptions>): Promise<Response> {
     return fetch(options.url, {
-        headers: new Headers({'X-AjaxCom': 'true', 'Accept': 'application/json'}),
-        method: options.method,
         body: options.body,
+        cache: "no-store",
+        credentials: "include",
+        headers: new Headers({"X-AjaxCom": "true", "Accept": "application/json"}),
+        method: options.method,
     });
 }
 
 export function handleOperations(response: Response): Promise<any> {
-    return new Promise((resolve) => (
-        response
-            .json()
-            .then((data: Array<OperationOptions>) => {
-                data.forEach((operation) => handleOperation(operation));
-            })
-            .then(resolve)
-    ));
+    return response
+        .json()
+        .then((data: IOperationOptions[]) => {
+            data.forEach((operation) => handleOperation(operation));
+        });
 }
 
-function handleOperation({operation, options}: OperationOptions) {
+function handleOperation({operation, options}: IOperationOptions) {
     switch (operation) {
-        case 'container':
+        case "container":
             handleContainer(options);
             break;
-        case 'changeurl':
+        case "changeurl":
             handleChangeUrl(options);
             break;
-        case 'callback':
+        case "callback":
             handleCallback(options);
             break;
         default:
-            throw "Operation " + operation + " is not supported";
+            throw new Error("Operation " + operation + " is not supported");
     }
 }

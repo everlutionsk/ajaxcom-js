@@ -1,4 +1,4 @@
-export interface Options {
+export interface IOptions {
     linksSelector: string;
     formsSelector: string;
 }

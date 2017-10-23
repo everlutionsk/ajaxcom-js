@@ -1,4 +1,4 @@
-export interface OperationOptions {
+export interface IOperationOptions {
     operation: string;
     options: any;
 }

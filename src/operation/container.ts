@@ -1,94 +1,94 @@
-import {ContainerOptions} from "./options/containerOptions";
+import {IContainerOptions} from "./options/containerOptions";
 
-export function handleContainer(options: ContainerOptions) {
+export function handleContainer(options: IContainerOptions) {
     const elements = document.querySelectorAll(options.target);
 
     // if elements are not present in DOM just ignore the handler
-    if (elements === null) return;
+    if (elements === null) { return; }
 
     function html() {
-        forEach(elements, (index, element) => {
+        handleCallback(elements, (index, element) => {
                 element.innerHTML = options.value;
-            }
+            },
         );
     }
 
     function remove() {
-        forEach(elements, (index, element) => {
+        handleCallback(elements, (index, element) => {
                 element.remove();
-            }
+            },
         );
     }
 
     function append() {
-        forEach(elements, (index, element) => {
+        handleCallback(elements, (index, element) => {
                 element.appendChild(parseHTML(options.value));
-            }
+            },
         );
     }
 
     function prepend() {
-        forEach(elements, (index, element) => {
+        handleCallback(elements, (index, element) => {
                 element.insertBefore(parseHTML(options.value), element.firstChild);
-            }
+            },
         );
     }
 
     function replace() {
-        forEach(elements, (index, element) => {
+        handleCallback(elements, (index, element) => {
                 element.outerHTML = options.value;
-            }
+            },
         );
     }
 
     function addClass() {
-        forEach(elements, (index, element) => {
+        handleCallback(elements, (index, element) => {
                 element.classList.add(options.value);
-            }
+            },
         );
     }
 
     function removeClass() {
-        forEach(elements, (index, element) => {
+        handleCallback(elements, (index, element) => {
                 element.classList.remove(options.value);
-            }
+            },
         );
     }
 
     function attr() {
-        forEach(elements, (index, element) => {
+        handleCallback(elements, (index, element) => {
                 element.setAttribute(options.attr, options.value);
-            }
+            },
         );
     }
 
     switch (options.method) {
-        case 'html':
+        case "html":
             html();
             break;
-        case 'remove':
+        case "remove":
             remove();
             break;
-        case 'append':
+        case "append":
             append();
             break;
-        case 'prepend':
+        case "prepend":
             prepend();
             break;
-        case 'replace':
+        case "replace":
             replace();
             break;
-        case 'addClass':
+        case "addClass":
             addClass();
             break;
-        case 'removeClass':
+        case "removeClass":
             removeClass();
             break;
-        case 'attr':
+        case "attr":
             attr();
             break;
         default:
-            throw "Container method " + options.method + " is not supported";
+            throw new Error("Container method " + options.method + " is not supported");
     }
 }
 
@@ -98,7 +98,7 @@ function parseHTML(html: string) {
     return parser.parseFromString(html, "text/html");
 }
 
-function forEach(array, callback) {
+function handleCallback(array, callback) {
     for (let i = 0; i < array.length; i++) {
         callback.call(this, i, array[i]);
     }

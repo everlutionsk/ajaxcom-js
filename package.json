@@ -1,11 +1,13 @@
 {
   "name": "@everlutionsk/ajaxcom",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Ajaxcom JS library",
   "main": "dist/ajaxcom.min.js",
   "scripts": {
     "build": "webpack --config=./webpack.production.js",
-    "watch": "webpack --config=./webpack.development.js"
+    "watch": "webpack --config=./webpack.development.js",
+    "lint": "tslint -c tslint.json 'src/**/*.ts' --force",
+    "lint-fix": "tslint -c tslint.json 'src/**/*.ts' --force --fix"
   },
   "contributors": [
     {
@@ -28,9 +30,10 @@
   "license": "MIT",
   "devDependencies": {
     "awesome-typescript-loader": "^3.2.3",
-    "typescript": "^2.5.2",
+    "tslint": "^5.8.0",
+    "typescript": "^2.5.3",
     "uglifyjs-webpack-plugin": "^0.4.6",
-    "webpack": "^3.5.5"
+    "webpack": "^3.8.1"
   },
   "files": [
     "dist"

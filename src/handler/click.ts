@@ -1,23 +1,23 @@
-import {AjaxOptions} from "../options/ajaxOptions";
-import {FetchOptions} from "../options/fetchOptions";
+import {IAjaxOptions} from "../options/ajaxOptions";
+import {IFetchOptions} from "../options/fetchOptions";
+import {IOptions} from "../options/options";
 import {request} from "./request";
-import {Options} from "../options/options";
 
-export function toHandleClick(options: Partial<Options &AjaxOptions>) {
+export function toHandleClick(options: Partial<IOptions &IAjaxOptions>) {
     return (event: MouseEvent) => {
-        if (!event.srcElement.matches(options.linksSelector)) return;
-        if (isInvalid(event)) return;
+        if (!event.srcElement.matches(options.linksSelector)) { return; }
+        if (isInvalid(event)) { return; }
         event.preventDefault();
 
         const link = event.srcElement as HTMLAnchorElement;
         const fetchOptions = {
             ...options,
-            url: link.href,
             method: "GET",
-        } as Partial<AjaxOptions & FetchOptions>;
+            url: link.href,
+        } as Partial<IAjaxOptions & IFetchOptions>;
 
         request(fetchOptions);
-    }
+    };
 }
 
 function isInvalid(event: MouseEvent): boolean {
@@ -34,7 +34,7 @@ function isNonAjaxcomCall(event: MouseEvent) {
 }
 
 function isNotAnchor(link: Element) {
-    return link.tagName.toUpperCase() !== 'A';
+    return link.tagName.toUpperCase() !== "A";
 }
 
 function isExternalLink(link: HTMLAnchorElement) {
@@ -42,9 +42,9 @@ function isExternalLink(link: HTMLAnchorElement) {
 }
 
 function isNotAnchorOnSamePage(link: HTMLAnchorElement) {
-    return link.hash && link.href.replace(link.hash, '') === location.href.replace(location.hash, '');
+    return link.hash && link.href.replace(link.hash, "") === location.href.replace(location.hash, "");
 }
 
 function isAnchorEmpty(link: HTMLAnchorElement) {
-    return link.href === location.href + '#';
+    return link.href === location.href + "#";
 }

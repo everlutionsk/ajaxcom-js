@@ -1,14 +1,14 @@
-import {CallbackOptions} from "./options/callbackOptions";
+import {ICallbackOptions} from "./options/callbackOptions";
 
-export function handleCallback(options: CallbackOptions) {
-    const namespaces = options.callFunction.split('.');
+export function handleCallback(options: ICallbackOptions) {
+    const namespaces = options.callFunction.split(".");
     let context = window;
 
-    namespaces.forEach(function (item) {
+    namespaces.forEach((item) => {
         context = context[item];
     });
 
-    if (typeof context === 'function') {
+    if (typeof context === "function") {
         context(options.params);
     }
 }
