@@ -5,11 +5,12 @@ import {request} from "./request";
 
 export function toHandleClick(options: Partial<IOptions &IAjaxOptions>) {
     return (event: MouseEvent) => {
-        if (!event.srcElement.matches(options.linksSelector)) { return; }
-        if (isInvalid(event)) { return; }
-        event.preventDefault();
+        const link = (event.target || event.srcElement) as HTMLAnchorElement;
 
-        const link = event.srcElement as HTMLAnchorElement;
+        if (!link.matches(options.linksSelector)) { return; }
+        if (isInvalid(event)) { return; }
+
+        event.preventDefault();
         const fetchOptions = {
             ...options,
             method: "GET",
@@ -26,7 +27,7 @@ function isInvalid(event: MouseEvent): boolean {
         isExternalLink,
         isNotAnchorOnSamePage,
         isAnchorEmpty,
-    ].some((f) => f(event.srcElement as Element));
+    ].some((f) => f((event.target || event.srcElement) as Element));
 }
 
 function isNonAjaxcomCall(event: MouseEvent) {
