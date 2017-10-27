@@ -1,6 +1,6 @@
 {
   "name": "@everlutionsk/ajaxcom",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Ajaxcom JS library",
   "main": "dist/ajaxcom.min.js",
   "scripts": {
