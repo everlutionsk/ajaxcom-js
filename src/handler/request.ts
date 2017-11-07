@@ -10,6 +10,6 @@ export async function request(options: Partial<IAjaxOptions & IFetchOptions>): P
         await handleOperations(response);
         options.complete();
     } catch (e) {
-        options.error();
+        options.error(e);
     }
 }
