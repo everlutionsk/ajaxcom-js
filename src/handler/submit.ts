@@ -40,6 +40,6 @@ function fetchOptionsForGet(formData: any, fetchOptions: SubmitOptions): SubmitO
 
     return {
         ...fetchOptions,
-        url: [fetchOptions.url, glue, query].join(),
+        url: [fetchOptions.url, glue, query].join(''),
     };
 }
