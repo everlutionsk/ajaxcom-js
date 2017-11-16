@@ -8,8 +8,8 @@ export function ajaxcom(options: Partial<IOptions & IAjaxOptions>) {
         beforeSend: () => Promise.resolve(),
         complete: () => undefined,
         error: onError,
-        formsSelector: "form",
-        linksSelector: "a:not([target=_blank])",
+        formsSelector: "form:not([data-ignore-ajaxcom])",
+        linksSelector: "a:not([target=_blank]):not([data-ignore-ajaxcom])",
         success: () => Promise.resolve(),
         ...options,
     };

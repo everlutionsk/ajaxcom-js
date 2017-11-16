@@ -2,10 +2,18 @@ import {IAjaxOptions} from "../options/ajaxOptions";
 import {IFetchOptions} from "../options/fetchOptions";
 import {IOptions} from "../options/options";
 import {request} from "./request";
+import {scrollToElement} from "./scroll";
 
 export function toHandleClick(options: Partial<IOptions &IAjaxOptions>) {
     return (event: MouseEvent) => {
         const link = (event.target || event.srcElement) as HTMLAnchorElement;
+
+        if (link.matches("[href^='#']")) {
+            event.preventDefault();
+            window.location.hash = link.hash;
+            scrollToElement(link.hash);
+            return;
+        }
 
         if (!link.matches(options.linksSelector)) { return; }
         if (isInvalid(event)) { return; }
