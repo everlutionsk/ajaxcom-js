@@ -34,6 +34,12 @@ require('@everlutionsk/ajaxcom').ajaxcom({
 
 # Development
 
+## Install dependencies
+
+```bash
+docker run --rm -it -v $(pwd):/app -w /app node npm install
+```
+
 ## Compilation
 
 ```bash
