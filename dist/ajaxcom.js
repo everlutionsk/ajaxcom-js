@@ -206,7 +206,7 @@ var request_1 = __webpack_require__(0);
 var scroll_1 = __webpack_require__(7);
 function toHandleClick(options) {
     return function (event) {
-        var link = (event.target || event.srcElement);
+        var link = getLink(event);
         if (link.matches("[href^='#']")) {
             event.preventDefault();
             window.location.hash = link.hash;
@@ -216,7 +216,10 @@ function toHandleClick(options) {
         if (!link.matches(options.linksSelector)) {
             return;
         }
-        if (isInvalid(event)) {
+        if (isNonAjaxcomCall(event)) {
+            return;
+        }
+        if (isInvalid(link)) {
             return;
         }
         event.preventDefault();
@@ -225,13 +228,13 @@ function toHandleClick(options) {
     };
 }
 exports.toHandleClick = toHandleClick;
-function isInvalid(event) {
-    return isNonAjaxcomCall(event) || [
+function isInvalid(link) {
+    return [
         isNotAnchor,
         isExternalLink,
         isNotAnchorOnSamePage,
         isAnchorEmpty,
-    ].some(function (f) { return f((event.target || event.srcElement)); });
+    ].some(function (f) { return f(link); });
 }
 function isNonAjaxcomCall(event) {
     return event.which > 1 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
@@ -247,6 +250,13 @@ function isNotAnchorOnSamePage(link) {
 }
 function isAnchorEmpty(link) {
     return link.href === location.href + "#";
+}
+function getLink(event) {
+    var link = (event.target || event.srcElement);
+    if (isNotAnchor(link)) {
+        return link.parentElement;
+    }
+    return link;
 }
 
 
