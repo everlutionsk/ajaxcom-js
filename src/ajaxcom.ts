@@ -18,6 +18,13 @@ export function ajaxcom(options: Partial<IOptions & IAjaxOptions>) {
     document.addEventListener("submit", toHandleSubmit(ajaxcomOptions));
 
     window.onpopstate = (event: PopStateEvent) => {
+
+        const link = (event.target || event.srcElement) as Window;
+
+        if (link.location.hash && link.location.href.replace(link.location.hash, "") === location.href.replace(location.hash, "")) {
+            return;
+        }
+
         if (typeof event.state !== "object" || event.state === null) { window.location.reload(); }
         window.location.href = event.state.url;
     };
