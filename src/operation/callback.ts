@@ -5,6 +5,9 @@ export function handleCallback(options: ICallbackOptions) {
     let context = window;
 
     namespaces.forEach((item) => {
+        if (context[item] === undefined) {
+            throw new Error('Invalid callback "' + options.callFunction + '"');
+        }
         context = context[item];
     });
 

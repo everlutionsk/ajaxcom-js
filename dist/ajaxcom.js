@@ -307,6 +307,9 @@ function handleCallback(options) {
     var namespaces = options.callFunction.split(".");
     var context = window;
     namespaces.forEach(function (item) {
+        if (context[item] === undefined) {
+            throw new Error('Invalid callback "' + options.callFunction + '"');
+        }
         context = context[item];
     });
     if (typeof context === "function") {
