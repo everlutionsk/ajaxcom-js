@@ -317,6 +317,9 @@ function handleCallback(options) {
     var namespaces = options.callFunction.split(".");
     var context = window;
     namespaces.forEach(function (item) {
+        if (context[item] === undefined) {
+            throw new Error('Invalid callback "' + options.callFunction + '"');
+        }
         context = context[item];
     });
     if (typeof context === "function") {
@@ -566,4 +569,4 @@ function fetchOptionsForGet(formData, fetchOptions) {
 /***/ })
 /******/ ]);
 });
-//# sourceMappingURL=ajaxcom.min.js.map
+//# sourceMappingURL=ajaxcom.js.map

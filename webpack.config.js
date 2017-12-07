@@ -6,7 +6,7 @@ module.exports = {
     },
     output: {
         path: path.resolve('dist'),
-        filename: '[name].min.js',
+        filename: '[name].js',
         library: "ajaxcom",
         libraryTarget: "umd",
     },
@@ -18,7 +18,6 @@ module.exports = {
         extensions: ['.ts'],
     },
     cache: true,
-    watch: true,
     stats: 'minimal',
     devtool: 'source-map',
     watchOptions: {
