@@ -4,16 +4,6 @@ import {IOptions} from "../options/options";
 import {request} from "./request";
 import {scrollToElement} from "./scroll";
 
-function getLink(event: MouseEvent) {
-    const link = (event.target || event.srcElement) as HTMLAnchorElement;
-
-    if (isNotAnchor(link)) {
-        return link.parentElement as HTMLAnchorElement;
-    }
-
-    return link;
-}
-
 export function toHandleClick(options: Partial<IOptions &IAjaxOptions>) {
     return (event: MouseEvent) => {
         const link = getLink(event);
@@ -67,4 +57,14 @@ function isNotAnchorOnSamePage(link: HTMLAnchorElement) {
 
 function isAnchorEmpty(link: HTMLAnchorElement) {
     return link.href === location.href + "#";
+}
+
+function getLink(event: MouseEvent) {
+    const link = (event.target || event.srcElement) as HTMLAnchorElement;
+
+    if (isNotAnchor(link)) {
+        return link.parentElement as HTMLAnchorElement;
+    }
+
+    return link;
 }

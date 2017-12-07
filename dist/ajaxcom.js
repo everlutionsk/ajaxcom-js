@@ -204,13 +204,6 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var request_1 = __webpack_require__(0);
 var scroll_1 = __webpack_require__(7);
-function getLink(event) {
-    var link = (event.target || event.srcElement);
-    if (isNotAnchor(link)) {
-        return link.parentElement;
-    }
-    return link;
-}
 function toHandleClick(options) {
     return function (event) {
         var link = getLink(event);
@@ -257,6 +250,13 @@ function isNotAnchorOnSamePage(link) {
 }
 function isAnchorEmpty(link) {
     return link.href === location.href + "#";
+}
+function getLink(event) {
+    var link = (event.target || event.srcElement);
+    if (isNotAnchor(link)) {
+        return link.parentElement;
+    }
+    return link;
 }
 
 
