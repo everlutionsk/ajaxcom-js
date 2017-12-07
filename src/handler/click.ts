@@ -4,9 +4,19 @@ import {IOptions} from "../options/options";
 import {request} from "./request";
 import {scrollToElement} from "./scroll";
 
+function getLink(event: MouseEvent) {
+    const link = (event.target || event.srcElement) as HTMLAnchorElement;
+
+    if (isNotAnchor(link)) {
+        return link.parentElement as HTMLAnchorElement;
+    }
+
+    return link;
+}
+
 export function toHandleClick(options: Partial<IOptions &IAjaxOptions>) {
     return (event: MouseEvent) => {
-        const link = (event.target || event.srcElement) as HTMLAnchorElement;
+        const link = getLink(event);
 
         if (link.matches("[href^='#']")) {
             event.preventDefault();
@@ -16,7 +26,8 @@ export function toHandleClick(options: Partial<IOptions &IAjaxOptions>) {
         }
 
         if (!link.matches(options.linksSelector)) { return; }
-        if (isInvalid(event)) { return; }
+        if (isNonAjaxcomCall(event)) { return; }
+        if (isInvalid(link)) { return; }
 
         event.preventDefault();
         const fetchOptions = {
@@ -29,13 +40,13 @@ export function toHandleClick(options: Partial<IOptions &IAjaxOptions>) {
     };
 }
 
-function isInvalid(event: MouseEvent): boolean {
-    return isNonAjaxcomCall(event) || [
+function isInvalid(link: Element): boolean {
+    return [
         isNotAnchor,
         isExternalLink,
         isNotAnchorOnSamePage,
         isAnchorEmpty,
-    ].some((f) => f((event.target || event.srcElement) as Element));
+    ].some((f) => f(link));
 }
 
 function isNonAjaxcomCall(event: MouseEvent) {
