@@ -1,6 +1,8 @@
 # About Ajaxcom
 
-todo
+Ajaxcom is JavaScript library which can be used for DOM manipulation called via Ajax from any backend you want. If you are using PHP you can easily use it with [Ajaxcom PHP Library](https://github.com/everlutionsk/ajaxcom-php). If you use Symfony framework, you can start using [Ajaxcom Symfony bundle](https://github.com/everlutionsk/ajaxcom-bundle).
+
+Ajaxcom uses `fetch` and `Promise` functions. When you have problems within older browsers, please use [`fetch`](https://github.com/github/fetch) and [`Promise`](https://www.npmjs.com/package/promise-polyfill) polyfills.
 
 # Usage
 
