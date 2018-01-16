@@ -10,7 +10,12 @@ export function toHandleClick(options: Partial<IOptions &IAjaxOptions>) {
 
         if (link.matches("[href^='#']")) {
             event.preventDefault();
-            window.location.hash = link.hash;
+            // Unlike Chrome, in Firefox, window.location.hash = ''; would result in actual appending of '#' to
+            // current URL, which will trigger window.popstate event. From inside our popstate handler we have no
+            // way to detect this and differentiate empty location hash from navigating to current URL (without hash).
+            if (link.hash) {
+                window.location.hash = link.hash;
+            }
             scrollToElement(link.hash);
             return;
         }
