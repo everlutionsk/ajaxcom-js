@@ -14,7 +14,7 @@ const defaultCallbacks = {
 
 export function initialize(options: Partial<IAjaxcomSelectors & IAjaxcomCallbacks>) {
     const ajaxcomOptions = {
-        defaultCallbacks,
+        ...defaultCallbacks,
         formsSelector: "form:not([data-ignore-ajaxcom])",
         linksSelector: "a:not([target=_blank]):not([data-ignore-ajaxcom])",
         ...options,

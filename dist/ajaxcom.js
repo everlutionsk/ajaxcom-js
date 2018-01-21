@@ -209,7 +209,7 @@ var defaultCallbacks = {
     success: function () { return Promise.resolve(); },
 };
 function initialize(options) {
-    var ajaxcomOptions = __assign({ defaultCallbacks: defaultCallbacks, formsSelector: "form:not([data-ignore-ajaxcom])", linksSelector: "a:not([target=_blank]):not([data-ignore-ajaxcom])" }, options);
+    var ajaxcomOptions = __assign({}, defaultCallbacks, { formsSelector: "form:not([data-ignore-ajaxcom])", linksSelector: "a:not([target=_blank]):not([data-ignore-ajaxcom])" }, options);
     document.addEventListener("click", click_1.toHandleClick(ajaxcomOptions));
     document.addEventListener("submit", submit_1.toHandleSubmit(ajaxcomOptions));
     window.onpopstate = function (event) {
