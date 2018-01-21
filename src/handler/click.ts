@@ -1,10 +1,10 @@
-import {IAjaxOptions} from "../options/ajaxOptions";
+import {IAjaxcomCallbacks} from "../options/callbacks";
 import {IFetchOptions} from "../options/fetchOptions";
-import {IOptions} from "../options/options";
+import {IAjaxcomSelectors} from "../options/selectors";
 import {request} from "./request";
 import {scrollToElement} from "./scroll";
 
-export function toHandleClick(options: Partial<IOptions &IAjaxOptions>) {
+export function toHandleClick(options: Partial<IAjaxcomSelectors &IAjaxcomCallbacks>) {
     return (event: MouseEvent) => {
         const link = getLink(event);
 
@@ -29,7 +29,7 @@ export function toHandleClick(options: Partial<IOptions &IAjaxOptions>) {
             ...options,
             method: "GET",
             url: link.href,
-        } as Partial<IAjaxOptions & IFetchOptions>;
+        } as Partial<IAjaxcomCallbacks & IFetchOptions>;
 
         request(fetchOptions);
     };

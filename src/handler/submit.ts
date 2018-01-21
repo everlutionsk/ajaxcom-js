@@ -1,9 +1,9 @@
-import {IAjaxOptions} from "../options/ajaxOptions";
+import {IAjaxcomCallbacks} from "../options/callbacks";
 import {IFetchOptions} from "../options/fetchOptions";
-import {IOptions} from "../options/options";
+import {IAjaxcomSelectors} from "../options/selectors";
 import {request} from "./request";
 
-export function toHandleSubmit(options?: Partial<IOptions & IAjaxOptions>) {
+export function toHandleSubmit(options?: Partial<IAjaxcomSelectors & IAjaxcomCallbacks>) {
     return (event: Event) => {
         const form = event.target as HTMLFormElement;
 
@@ -25,7 +25,7 @@ export function toHandleSubmit(options?: Partial<IOptions & IAjaxOptions>) {
     };
 }
 
-type SubmitOptions = Partial<IAjaxOptions & IFetchOptions>;
+type SubmitOptions = Partial<IAjaxcomCallbacks & IFetchOptions>;
 
 function fetchOptionsForPost(formData: FormData, fetchOptions: SubmitOptions): SubmitOptions {
     return {

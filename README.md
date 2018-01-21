@@ -2,7 +2,7 @@
 
 Ajaxcom is JavaScript library which can be used for DOM manipulation called via Ajax from any backend you want. If you are using PHP you can easily use it with [Ajaxcom PHP Library](https://github.com/everlutionsk/ajaxcom-php). If you use Symfony framework, you can start using [Ajaxcom Symfony bundle](https://github.com/everlutionsk/ajaxcom-bundle).
 
-Ajaxcom uses `fetch` and `Promise` functions. When you have problems within older browsers, please use [`fetch`](https://github.com/github/fetch) and [`Promise`](https://www.npmjs.com/package/promise-polyfill) polyfills.
+Ajaxcom uses `fetch` and `Promise` functions. When you have problems with older browsers, please use [`fetch`](https://github.com/github/fetch) and [`Promise`](https://www.npmjs.com/package/promise-polyfill) polyfills.
 
 # Usage
 
@@ -24,13 +24,23 @@ You can specify following options when initializing the library - you will pass 
 Example:
 
 ```typescript
-require('@everlutionsk/ajaxcom').ajaxcom({
+// initialization
+const ajaxcom = require('@everlutionsk/ajaxcom');
+ajaxcom.initialize({
     complete: function () {
         console.log('Yet another page rendered via ajaxcom');
     },
     error: function (e) {
         console.error(e);
     }
+});
+
+// usage of Ajaxcom request
+ajaxcom.fetch({
+    'url': 'https://some.url',
+    'method': 'POST', // defaults to 'GET'
+    'body': JSON.stringify({'data': 'you', 'want': 'to', 'pass': 'to backend'}), // optional
+    // optionally you can provide callbacks such as beforeSend, success, error and complete
 });
 ```
 
@@ -59,7 +69,7 @@ docker run --rm -it -v $(pwd):/app -w /app node npm run lint-fix # fix the major
 ## Publish
 
 ```bash
-docker run --rm -it -v ~/.composer/:/root/.composer/ -v $(pwd):/app -w /app node bash
+docker run --rm -it -v ~/.composer/:/root/.composer/ -v ~/.gitconfig:/root/.gitconfig -v $(pwd):/app -w /app node bash
 npm login
 npm version patch|minor|major
 npm publish . --tag @everlutionsk/ajaxcom@x.y.z --access public

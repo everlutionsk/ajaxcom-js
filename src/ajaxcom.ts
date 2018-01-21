@@ -1,16 +1,22 @@
-import {IAjaxOptions} from "options/ajaxOptions";
+import {IAjaxcomCallbacks} from "options/callbacks";
 import {toHandleClick} from "./handler/click";
+import {request} from "./handler/request";
 import {toHandleSubmit} from "./handler/submit";
-import {IOptions} from "./options/options";
+import {IFetchOptions} from "./options/fetchOptions";
+import {IAjaxcomSelectors} from "./options/selectors";
 
-export function ajaxcom(options: Partial<IOptions & IAjaxOptions>) {
+const defaultCallbacks = {
+    beforeSend: () => Promise.resolve(),
+    complete: () => undefined,
+    error: onError,
+    success: () => Promise.resolve(),
+};
+
+export function initialize(options: Partial<IAjaxcomSelectors & IAjaxcomCallbacks>) {
     const ajaxcomOptions = {
-        beforeSend: () => Promise.resolve(),
-        complete: () => undefined,
-        error: onError,
+        defaultCallbacks,
         formsSelector: "form:not([data-ignore-ajaxcom])",
         linksSelector: "a:not([target=_blank]):not([data-ignore-ajaxcom])",
-        success: () => Promise.resolve(),
         ...options,
     };
 
@@ -18,16 +24,33 @@ export function ajaxcom(options: Partial<IOptions & IAjaxOptions>) {
     document.addEventListener("submit", toHandleSubmit(ajaxcomOptions));
 
     window.onpopstate = (event: PopStateEvent) => {
-
         const link = (event.target || event.srcElement) as Window;
 
-        if (link.location.hash && link.location.href.replace(link.location.hash, "") === location.href.replace(location.hash, "")) {
+        if (link.location.hash && hasEmptyHash(link)) {
             return;
         }
 
-        if (typeof event.state !== "object" || event.state === null) { window.location.reload(); }
+        if (typeof event.state !== "object" || event.state === null) {
+            window.location.reload();
+        }
         window.location.href = event.state.url;
     };
+
+    function hasEmptyHash(link: Window) {
+        return link.location.href.replace(link.location.hash, "") === location.href.replace(location.hash, "");
+    }
+}
+
+export async function fetch(requestOptions: IFetchOptions,
+                            ajaxcomCallbacks: Partial<IAjaxcomCallbacks>): Promise<void> {
+    const options = {
+        method: "GET",
+        ...defaultCallbacks,
+        ...ajaxcomCallbacks,
+        ...requestOptions,
+    } as Partial<IAjaxcomCallbacks & IFetchOptions>;
+
+    request(options);
 }
 
 function onError() {

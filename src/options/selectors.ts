@@ -1,4 +1,4 @@
-export interface IOptions {
+export interface IAjaxcomSelectors {
     linksSelector: string;
     formsSelector: string;
 }

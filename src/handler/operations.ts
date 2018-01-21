@@ -2,10 +2,10 @@ import {handleCallback} from "../operation/callback";
 import {handleChangeUrl} from "../operation/changeUrl";
 import {handleContainer} from "../operation/container";
 import {IOperationOptions} from "../operation/options/operationOptions";
-import {IAjaxOptions} from "../options/ajaxOptions";
+import {IAjaxcomCallbacks} from "../options/callbacks";
 import {IFetchOptions} from "../options/fetchOptions";
 
-export function fetchOperations(options: Partial<IAjaxOptions & IFetchOptions>): Promise<Response> {
+export function fetchOperations(options: Partial<IAjaxcomCallbacks & IFetchOptions>): Promise<Response> {
     return fetch(options.url, {
         body: options.body,
         cache: "no-store",

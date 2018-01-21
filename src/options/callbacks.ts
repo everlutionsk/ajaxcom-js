@@ -1,4 +1,4 @@
-export interface IAjaxOptions {
+export interface IAjaxcomCallbacks {
     beforeSend: () => Promise<any>;
     error: any;
     success: () => Promise<any>;
