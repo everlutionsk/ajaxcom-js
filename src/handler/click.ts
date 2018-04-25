@@ -1,13 +1,13 @@
 import {IAjaxcomCallbacks} from "../options/callbacks";
 import {IFetchOptions} from "../options/fetchOptions";
 import {IAjaxcomSelectors} from "../options/selectors";
+import {addFragmentOptions} from "./fragmentOptions";
 import {request} from "./request";
 import {scrollToElement} from "./scroll";
 
 export function toHandleClick(options: Partial<IAjaxcomSelectors &IAjaxcomCallbacks>) {
     return (event: MouseEvent) => {
         const link = getLink(event);
-
         if (link.matches("[href^='#']")) {
             event.preventDefault();
             // Unlike Chrome, in Firefox, window.location.hash = ''; would result in actual appending of '#' to
@@ -31,7 +31,7 @@ export function toHandleClick(options: Partial<IAjaxcomSelectors &IAjaxcomCallba
             url: link.href,
         } as Partial<IAjaxcomCallbacks & IFetchOptions>;
 
-        request(fetchOptions);
+        request(addFragmentOptions(fetchOptions, link.hash));
     };
 }
 

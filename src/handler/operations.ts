@@ -10,7 +10,7 @@ export function fetchOperations(options: Partial<IAjaxcomCallbacks & IFetchOptio
         body: options.body,
         cache: "no-store",
         credentials: "include",
-        headers: new Headers({"X-AjaxCom": "true", "Accept": "application/json"}),
+        headers: new Headers({...options.headers, "X-AjaxCom": "true", "Accept": "application/json"}),
         method: options.method,
     });
 }

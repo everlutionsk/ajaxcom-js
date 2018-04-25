@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -115,7 +115,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var operations_1 = __webpack_require__(3);
+var operations_1 = __webpack_require__(5);
 function request(options) {
     return __awaiter(this, void 0, void 0, function () {
         var response, e_1;
@@ -151,6 +151,52 @@ exports.request = request;
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var scroll_1 = __webpack_require__(2);
+function addFragmentOptions(fetchOptions, fragment) {
+    if (fragment.length === 0) {
+        return fetchOptions;
+    }
+    fetchOptions.headers = { "X-AjaxComFragment": fragment.substring(1) };
+    var completeFunction = fetchOptions.complete;
+    fetchOptions.complete = function () {
+        scroll_1.scrollToElement(fragment);
+        completeFunction();
+    };
+    return fetchOptions;
+}
+exports.addFragmentOptions = addFragmentOptions;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function scrollToElement(hash) {
+    if (hash.length < 1) {
+        return;
+    }
+    var element = document.querySelector(hash);
+    if (null === element) {
+        element = document.querySelector("[name=" + hash.substr(1) + "]");
+    }
+    if (null === element) {
+        return;
+    }
+    element.scrollIntoView();
+}
+exports.scrollToElement = scrollToElement;
+
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -199,9 +245,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var click_1 = __webpack_require__(2);
+var click_1 = __webpack_require__(4);
 var request_1 = __webpack_require__(0);
-var submit_1 = __webpack_require__(8);
+var submit_1 = __webpack_require__(9);
 var defaultCallbacks = {
     beforeSend: function () { return Promise.resolve(); },
     complete: function () { return undefined; },
@@ -244,7 +290,7 @@ function onError() {
 
 
 /***/ }),
-/* 2 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -258,8 +304,9 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var fragmentOptions_1 = __webpack_require__(1);
 var request_1 = __webpack_require__(0);
-var scroll_1 = __webpack_require__(7);
+var scroll_1 = __webpack_require__(2);
 function toHandleClick(options) {
     return function (event) {
         var link = getLink(event);
@@ -285,7 +332,7 @@ function toHandleClick(options) {
         }
         event.preventDefault();
         var fetchOptions = __assign({}, options, { method: "GET", url: link.href });
-        request_1.request(fetchOptions);
+        request_1.request(fragmentOptions_1.addFragmentOptions(fetchOptions, link.hash));
     };
 }
 exports.toHandleClick = toHandleClick;
@@ -322,21 +369,29 @@ function getLink(event) {
 
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var callback_1 = __webpack_require__(4);
-var changeUrl_1 = __webpack_require__(5);
-var container_1 = __webpack_require__(6);
+var callback_1 = __webpack_require__(6);
+var changeUrl_1 = __webpack_require__(7);
+var container_1 = __webpack_require__(8);
 function fetchOperations(options) {
     return fetch(options.url, {
         body: options.body,
         cache: "no-store",
         credentials: "include",
-        headers: new Headers({ "X-AjaxCom": "true", "Accept": "application/json" }),
+        headers: new Headers(__assign({}, options.headers, { "X-AjaxCom": "true", "Accept": "application/json" })),
         method: options.method,
     });
 }
@@ -368,7 +423,7 @@ function handleOperation(_a) {
 
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -391,7 +446,7 @@ exports.handleCallback = handleCallback;
 
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -432,7 +487,7 @@ function redirectToUrl(options) {
 
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -541,30 +596,7 @@ function getNodes(html) {
 
 
 /***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function scrollToElement(hash) {
-    if (hash.length < 1) {
-        return;
-    }
-    var element = document.querySelector(hash);
-    if (null === element) {
-        element = document.querySelector("[name=" + hash.substr(1) + "]");
-    }
-    if (null === element) {
-        return;
-    }
-    element.scrollIntoView();
-}
-exports.scrollToElement = scrollToElement;
-
-
-/***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -598,6 +630,7 @@ var __spread = (this && this.__spread) || function () {
     return ar;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var fragmentOptions_1 = __webpack_require__(1);
 var request_1 = __webpack_require__(0);
 function toHandleSubmit(options) {
     return function (event) {
@@ -611,12 +644,21 @@ function toHandleSubmit(options) {
         event.preventDefault();
         var formData = new FormData(form);
         var fetchOptions = __assign({}, options, { method: form.method, url: form.action });
-        request_1.request(form.method.toUpperCase() === "GET"
-            ? fetchOptionsForGet(formData, fetchOptions)
-            : fetchOptionsForPost(formData, fetchOptions));
+        request_1.request(getFetchOptions(form, formData, fetchOptions));
     };
 }
 exports.toHandleSubmit = toHandleSubmit;
+function getFetchOptions(form, formData, fetchOptions) {
+    var options = form.method.toUpperCase() === "GET"
+        ? fetchOptionsForGet(formData, fetchOptions)
+        : fetchOptionsForPost(formData, fetchOptions);
+    var hashPosition = form.action.indexOf("#");
+    if (hashPosition < 0) {
+        return options;
+    }
+    var fragment = form.action.substring(hashPosition);
+    return fragmentOptions_1.addFragmentOptions(options, fragment);
+}
 function fetchOptionsForPost(formData, fetchOptions) {
     return __assign({}, fetchOptions, { body: formData });
 }

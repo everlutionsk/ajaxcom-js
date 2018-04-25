@@ -1,6 +1,7 @@
 import {IAjaxcomCallbacks} from "../options/callbacks";
 import {IFetchOptions} from "../options/fetchOptions";
 import {IAjaxcomSelectors} from "../options/selectors";
+import {addFragmentOptions} from "./fragmentOptions";
 import {request} from "./request";
 
 export function toHandleSubmit(options?: Partial<IAjaxcomSelectors & IAjaxcomCallbacks>) {
@@ -18,11 +19,22 @@ export function toHandleSubmit(options?: Partial<IAjaxcomSelectors & IAjaxcomCal
             url: form.action,
         };
 
-        request(form.method.toUpperCase() === "GET"
-            ? fetchOptionsForGet(formData, fetchOptions)
-            : fetchOptionsForPost(formData, fetchOptions),
-        );
+        request(getFetchOptions(form, formData, fetchOptions));
     };
+}
+
+function getFetchOptions(form: HTMLFormElement, formData: FormData, fetchOptions: SubmitOptions): SubmitOptions {
+    const options = form.method.toUpperCase() === "GET"
+        ? fetchOptionsForGet(formData, fetchOptions)
+        : fetchOptionsForPost(formData, fetchOptions);
+
+    const hashPosition = form.action.indexOf("#");
+
+    if (hashPosition < 0) { return options; }
+
+    const fragment = form.action.substring(hashPosition);
+
+    return addFragmentOptions(options, fragment);
 }
 
 type SubmitOptions = Partial<IAjaxcomCallbacks & IFetchOptions>;
