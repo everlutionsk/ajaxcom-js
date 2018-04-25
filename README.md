@@ -72,5 +72,5 @@ docker run --rm -it -v $(pwd):/app -w /app node npm run lint-fix # fix the major
 docker run --rm -it -v ~/.composer/:/root/.composer/ -v ~/.gitconfig:/root/.gitconfig -v $(pwd):/app -w /app node bash
 npm login
 npm version patch|minor|major
-npm publish . --tag @everlutionsk/ajaxcom@x.y.z --access public
+npm publish . --access public
 ```
