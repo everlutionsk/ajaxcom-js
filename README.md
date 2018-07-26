@@ -6,7 +6,7 @@ Ajaxcom uses `fetch` and `Promise` functions. When you have problems with older 
 
 # Usage
 
-`ajaxcom` library will handle all links except links containing `data-ajaxcom-ignore` and links which contains `target="_blank"` by default. It automatically handles also all form submissions except forms containing `data-ajaxcom-ignore`. When server error occurs the generic message is shown via JavaScript alert.
+`ajaxcom` library will handle all links except links containing `data-ignore-ajaxcom` and links which contains `target="_blank"` by default. It automatically handles also all form submissions except forms containing `data-ignore-ajaxcom`. When server error occurs the generic message is shown via JavaScript alert.
 
 You can override all of the default options when initializing `ajaxcom` library and you can setup few callbacks as well.
 
