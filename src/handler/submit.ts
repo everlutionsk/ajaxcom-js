@@ -16,7 +16,7 @@ export function toHandleSubmit(options?: Partial<IAjaxcomSelectors & IAjaxcomCal
         const fetchOptions = {
             ...options,
             method: form.method,
-            url: form.action,
+            url: form.action ? form.action : window.location.href,
         };
 
         request(getFetchOptions(form, formData, fetchOptions));
