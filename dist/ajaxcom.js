@@ -643,7 +643,7 @@ function toHandleSubmit(options) {
         }
         event.preventDefault();
         var formData = new FormData(form);
-        var fetchOptions = __assign({}, options, { method: form.method, url: form.action });
+        var fetchOptions = __assign({}, options, { method: form.method, url: form.action ? form.action : window.location.href });
         request_1.request(getFetchOptions(form, formData, fetchOptions));
     };
 }
