@@ -2,7 +2,7 @@ import {ICallbackOptions} from "./options/callbackOptions";
 
 export function handleCallback(options: ICallbackOptions) {
     const namespaces = options.callFunction.split(".");
-    let context = window;
+    let context: any = window;
 
     namespaces.forEach((item) => {
         if (context[item] === undefined) {
