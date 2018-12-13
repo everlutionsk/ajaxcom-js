@@ -6,6 +6,12 @@ export async function request(options: Partial<IAjaxcomCallbacks & IFetchOptions
     try {
         await options.beforeSend();
         const response = await fetchOperations(options);
+
+        if (!response.ok) {
+            options.error(response);
+            return;
+        }
+
         await options.success();
         await handleOperations(response);
         options.complete();
