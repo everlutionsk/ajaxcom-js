@@ -25,51 +25,52 @@ Example:
 
 ```typescript
 // initialization
-const ajaxcom = require('@everlutionsk/ajaxcom');
+const ajaxcom = require("@everlutionsk/ajaxcom");
 ajaxcom.initialize({
-    complete: function () {
-        console.log('Yet another page rendered via ajaxcom');
-    },
-    error: function (e) {
-        console.error(e);
-    }
+  complete: function() {
+    console.log("Yet another page rendered via ajaxcom");
+  },
+  error: function(e) {
+    console.error(e);
+  }
 });
 
 // usage of Ajaxcom request
 ajaxcom.fetch({
-    'url': 'https://some.url',
-    'method': 'POST', // defaults to 'GET'
-    'body': JSON.stringify({'data': 'you', 'want': 'to', 'pass': 'to backend'}), // optional
-    // optionally you can provide callbacks such as beforeSend, success, error and complete
+  url: "https://some.url",
+  method: "POST", // defaults to 'GET'
+  body: JSON.stringify({ data: "you", want: "to", pass: "to backend" }) // optional
+  // optionally you can provide callbacks such as beforeSend, success, error and complete
 });
 ```
 
 # Development
 
-## Install dependencies
+Install the **latest** [yarn](https://yarnpkg.com/en/docs/install).
 
-```bash
-docker run --rm -it -v $(pwd):/app -w /app node npm install
+Install all dependencies via yarn:
+
+```
+yarn install
 ```
 
 ## Compilation
 
 ```bash
-docker run --rm -it -v $(pwd):/app -w /app node npm run build
-docker run --rm -it -v $(pwd):/app -w /app node npm run watch
+yarn build
+yarn watch
 ```
 
 ## Linting
 
 ```bash
-docker run --rm -it -v $(pwd):/app -w /app node npm run lint # shows you the problems
-docker run --rm -it -v $(pwd):/app -w /app node npm run lint-fix # fix the majority problems for you
+yarn lint # shows you the problems
+yarn lint-fix # fix the majority problems for you
 ```
 
 ## Publish
 
 ```bash
-docker run --rm -it -v ~/.composer/:/root/.composer/ -v ~/.gitconfig:/root/.gitconfig -v $(pwd):/app -w /app node bash
 npm login
 npm version patch|minor|major
 npm publish . --access public
