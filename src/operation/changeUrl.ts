@@ -5,19 +5,19 @@ export function handleChangeUrl(options: IChangeUrlOptions) {
 
     switch (options.method) {
         case "push":
-            handler = pushUrl(options);
+            handler = function() {pushUrl(options)};
             break;
         case "replace":
-            handler = replaceUrl(options);
+            handler = function() {replaceUrl(options)};
             break;
         case "redirect":
-            handler = redirectToUrl(options);
+            handler = function() {redirectToUrl(options)};
             break;
         default:
             throw new Error("ChangeUrl method " + options.method + " is not supported");
     }
 
-    setTimeout(function() {handler}, options.wait);
+    setTimeout(handler, options.wait);
 }
 
 function pushUrl(options: IChangeUrlOptions) {
