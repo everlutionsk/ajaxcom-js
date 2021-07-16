@@ -17,7 +17,7 @@ export function handleChangeUrl(options: IChangeUrlOptions) {
             throw new Error("ChangeUrl method " + options.method + " is not supported");
     }
 
-    setTimeout(handler, options.wait);
+    setTimeout(function() {handler}, options.wait);
 }
 
 function pushUrl(options: IChangeUrlOptions) {
