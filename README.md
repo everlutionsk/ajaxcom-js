@@ -64,8 +64,7 @@ yarn watch
 ## Linting
 
 ```bash
-yarn lint # shows you the problems
-yarn lint-fix # fix the majority problems for you
+yarn checkup
 ```
 
 ## Publish
