@@ -1,16 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
+    "target": "es2020",
+    "module": "esnext",
     "sourceMap": true,
     "moduleResolution": "node",
     "lib": ["dom", "es5", "es6"],
     "baseUrl": "src",
-    "downlevelIteration": true,
     "noImplicitThis": false,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "declaration": true,
+    "outDir": "dist"
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["./src/**/*.ts"]
 }

@@ -1,4 +1,4 @@
 export interface IAjaxcomSelectors {
-    linksSelector: string;
-    formsSelector: string;
+  linksSelector: string;
+  formsSelector: string;
 }

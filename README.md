@@ -25,21 +25,21 @@ Example:
 
 ```typescript
 // initialization
-const ajaxcom = require("@everlutionsk/ajaxcom");
+const ajaxcom = require('@everlutionsk/ajaxcom');
 ajaxcom.initialize({
-  complete: function() {
-    console.log("Yet another page rendered via ajaxcom");
+  complete: function () {
+    console.log('Yet another page rendered via ajaxcom');
   },
-  error: function(e) {
+  error: function (e) {
     console.error(e);
   }
 });
 
 // usage of Ajaxcom request
 ajaxcom.fetch({
-  url: "https://some.url",
-  method: "POST", // defaults to 'GET'
-  body: JSON.stringify({ data: "you", want: "to", pass: "to backend" }) // optional
+  url: 'https://some.url',
+  method: 'POST', // defaults to 'GET'
+  body: JSON.stringify({ data: 'you', want: 'to', pass: 'to backend' }) // optional
   // optionally you can provide callbacks such as beforeSend, success, error and complete
 });
 ```

@@ -1,13 +1,26 @@
 {
   "name": "@everlutionsk/ajaxcom",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "description": "Ajaxcom JS library",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/everlutionsk/ajaxcom-js.git"
+  },
   "main": "dist/ajaxcom.js",
   "scripts": {
-    "build": "webpack",
-    "watch": "webpack --watch",
-    "lint": "tslint -c tslint.json 'src/**/*.ts' --force",
-    "lint-fix": "tslint -c tslint.json 'src/**/*.ts' --force --fix"
+    "build": "rm -rf ./dist && tsc",
+    "checkup": "opinionated checkup",
+    "prepublishOnly": "rm -rf ./dist && tsc",
+    "watch": "tsc --watch"
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@deftomat/opinionated": "^0.7.2",
+    "prettier": "^2.3.2",
+    "typescript": "^4.3.5"
   },
   "contributors": [
     {
@@ -23,19 +36,5 @@
       "email": "tomas.szabo@everlution.sk"
     }
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/everlutionsk/ajaxcom-js.git"
-  },
-  "license": "MIT",
-  "devDependencies": {
-    "awesome-typescript-loader": "^5.2.1",
-    "tslint": "^5.18.0",
-    "typescript": "^3.5.3",
-    "webpack": "^4.39.2",
-    "webpack-cli": "^3.3.7"
-  },
-  "files": [
-    "dist"
-  ]
+  "prettier": "@deftomat/opinionated/configs/prettier.config.js"
 }

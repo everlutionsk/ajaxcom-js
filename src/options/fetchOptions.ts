@@ -1,6 +1,6 @@
 export interface IFetchOptions {
-    url: string;
-    method: string;
-    body?: any;
-    headers?: any;
+  url: string;
+  method: string;
+  body?: any;
+  headers?: any;
 }
