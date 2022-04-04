@@ -6,10 +6,11 @@ import { request } from './request';
 import { scrollToElement } from './scroll';
 
 export function toHandleClick(options: Partial<IAjaxcomSelectors & IAjaxcomCallbacks>) {
-  return (event: MouseEvent) => {
+  return (event: PointerEvent) => {
     const link = getLink(event);
+    if (link == null) return;
+
     if (link.matches("[href^='#']")) {
-      event.preventDefault();
       // Unlike Chrome, in Firefox, window.location.hash = ''; would result in actual appending of '#' to
       // current URL, which will trigger window.popstate event. From inside our popstate handler we have no
       // way to detect this and differentiate empty location hash from navigating to current URL (without hash).
@@ -65,11 +66,11 @@ function isAnchorEmpty(link: HTMLAnchorElement) {
   return link.href === location.href + '#';
 }
 
-function getLink(event: MouseEvent) {
-  const link = (event.target || event.srcElement) as HTMLAnchorElement;
+function getLink(event: PointerEvent) {
+  const link = event.target as HTMLAnchorElement;
 
   if (isNotAnchor(link)) {
-    return link.parentElement as HTMLAnchorElement;
+    return link.closest('a') as HTMLAnchorElement | null;
   }
 
   return link;
