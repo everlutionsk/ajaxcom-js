@@ -1,6 +1,6 @@
 {
   "name": "@everlutionsk/ajaxcom",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
@@ -39,5 +39,9 @@
       "email": "tomas.szabo@everlution.sk"
     }
   ],
-  "prettier": "@deftomat/opinionated/configs/prettier.config.js"
+  "prettier": "@deftomat/opinionated/configs/prettier.config.js",
+  "volta": {
+    "node": "18.12.1",
+    "yarn": "1.22.19"
+  }
 }
