@@ -1,15 +1,12 @@
-import { IAjaxcomCallbacks } from '../options/callbacks';
-import { IFetchOptions } from '../options/fetchOptions';
-import { IAjaxcomSelectors } from '../options/selectors';
-import { addFragmentOptions } from './fragmentOptions';
-import { request } from './request';
+import { MakeRequest } from '../ajaxcom';
 import { scrollToElement } from './scroll';
 
-export function toHandleClick(options: Partial<IAjaxcomSelectors & IAjaxcomCallbacks>) {
-  return (event: PointerEvent) => {
-    const link = getLink(event);
+export function toClickHandler(props: { linksSelector: string; makeRequest: MakeRequest }) {
+  return (event: MouseEvent) => {
+    const link = getHTMLAnchorElement(event);
     if (link == null) return;
 
+    // todo: review
     if (link.matches("[href^='#']")) {
       // Unlike Chrome, in Firefox, window.location.hash = ''; would result in actual appending of '#' to
       // current URL, which will trigger window.popstate event. From inside our popstate handler we have no
@@ -21,57 +18,67 @@ export function toHandleClick(options: Partial<IAjaxcomSelectors & IAjaxcomCallb
       return;
     }
 
-    if (!link.matches(options.linksSelector)) {
+    if (!link.matches(props.linksSelector)) {
       return;
     }
-    if (isNonAjaxcomCall(event)) {
+    if (isNotSamePageClick(event)) {
       return;
     }
-    if (isInvalid(link)) {
+    if (isExternalLink(link)) {
+      return;
+    }
+    if (isNotAnchorOnSamePage(link)) {
+      return;
+    }
+    if (isAnchorEmpty(link)) {
       return;
     }
 
     event.preventDefault();
-    const fetchOptions = {
-      ...options,
-      method: 'GET',
-      url: link.href
-    } as Partial<IAjaxcomCallbacks & IFetchOptions>;
 
-    request(addFragmentOptions(fetchOptions, link.hash));
+    props.makeRequest({
+      request: {
+        body: undefined,
+        headers: new Headers(),
+        method: 'GET',
+        url: link.href
+      },
+      target: event.target,
+      fragment: link.hash
+    });
   };
 }
 
-function isInvalid(link: Element): boolean {
-  return [isNotAnchor, isExternalLink, isNotAnchorOnSamePage, isAnchorEmpty].some(f => f(link));
+function isNotSamePageClick(event: MouseEvent): boolean {
+  return event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
 }
 
-function isNonAjaxcomCall(event: MouseEvent) {
-  return event.which > 1 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
+function isHTMLAnchorElement(link: EventTarget): link is HTMLAnchorElement {
+  return link instanceof HTMLAnchorElement && link.tagName.toUpperCase() === 'A';
 }
 
-function isNotAnchor(link: Element) {
-  return link.tagName.toUpperCase() !== 'A';
-}
-
-function isExternalLink(link: HTMLAnchorElement) {
+function isExternalLink(link: HTMLAnchorElement): boolean {
   return link.hostname !== location.hostname || link.protocol !== location.protocol;
 }
 
-function isNotAnchorOnSamePage(link: HTMLAnchorElement) {
-  return link.hash && link.href.replace(link.hash, '') === location.href.replace(location.hash, '');
+// todo: review and test
+function isNotAnchorOnSamePage(link: HTMLAnchorElement): boolean {
+  return (
+    link.hash.trim() !== '' &&
+    link.href.replace(link.hash, '') === location.href.replace(location.hash, '')
+  );
 }
 
-function isAnchorEmpty(link: HTMLAnchorElement) {
+function isAnchorEmpty(link: HTMLAnchorElement): boolean {
   return link.href === location.href + '#';
 }
 
-function getLink(event: PointerEvent) {
-  const link = event.target as HTMLAnchorElement;
+function getHTMLAnchorElement(event: MouseEvent) {
+  const link = event.target;
+  if (link == null) return null;
+  if (isHTMLAnchorElement(link)) return link;
 
-  if (isNotAnchor(link)) {
-    return link.closest('a') as HTMLAnchorElement | null;
-  }
+  if (link instanceof Element) return link.closest('a');
 
-  return link;
+  return null;
 }

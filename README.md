@@ -23,6 +23,19 @@ You can specify following options when initializing the library - you will pass 
 
 Example:
 
+```ts
+const sampleConfig: Config = {
+  beforeSend: (target: EventTarget | null) => Promise.resolve(),
+  complete: (target: EventTarget | null) => undefined,
+  error: (reason: string, target: EventTarget | null) => {
+    alert('Server cannot handle your request. Please try it again or contact the administrator.');
+  },
+  success: (target: EventTarget | null) => Promise.resolve(),
+  formsSelector: 'form:not([data-ignore-ajaxcom])',
+  linksSelector: 'a:not([target=_blank]):not([data-ignore-ajaxcom])'
+};
+```
+
 ```typescript
 // initialization
 const ajaxcom = require('@everlutionsk/ajaxcom');

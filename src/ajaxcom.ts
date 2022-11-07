@@ -1,63 +1,78 @@
-import { IAjaxcomCallbacks } from './options/callbacks';
-import { toHandleClick } from './handler/click';
-import { request } from './handler/request';
-import { toHandleSubmit } from './handler/submit';
-import { IFetchOptions } from './options/fetchOptions';
-import { IAjaxcomSelectors } from './options/selectors';
+import { toClickHandler } from './handler/click';
+import { FetchOptions, request } from './handler/request';
+import { scrollToElement } from './handler/scroll';
+import { toSubmitHandler } from './handler/submit';
 
-const defaultCallbacks = {
-  beforeSend: () => Promise.resolve(),
-  complete: () => undefined,
-  error: onError,
-  success: () => Promise.resolve()
-};
+export interface Config {
+  readonly beforeSend: (target: EventTarget | null) => Promise<void>;
+  readonly error: (reason: string, target: EventTarget | null) => void;
+  readonly success: (target: EventTarget | null) => Promise<void>;
+  readonly complete: (target: EventTarget | null) => void;
+  readonly linksSelector: string;
+  readonly formsSelector: string;
+}
+export interface MakeRequestProps {
+  target: EventTarget | null;
+  request: FetchOptions;
+  fragment?: string;
+}
+export type MakeRequest = (props: MakeRequestProps) => Promise<void>;
 
-export function initialize(options: Partial<IAjaxcomSelectors & IAjaxcomCallbacks>) {
-  const ajaxcomOptions = {
-    ...defaultCallbacks,
-    formsSelector: 'form:not([data-ignore-ajaxcom])',
-    linksSelector: 'a:not([target=_blank]):not([data-ignore-ajaxcom])',
-    ...options
-  };
+export function initialize(config: Config) {
+  const clickHandler = toClickHandler({
+    linksSelector: config.linksSelector,
+    makeRequest
+  });
+  const submitHandler = toSubmitHandler({
+    formsSelector: config.formsSelector,
+    makeRequest
+  });
 
-  document.addEventListener('click', toHandleClick(ajaxcomOptions));
-  document.addEventListener('submit', toHandleSubmit(ajaxcomOptions));
+  document.addEventListener('click', clickHandler);
+  document.addEventListener('submit', submitHandler);
 
+  // todo: review
   window.onpopstate = (event: PopStateEvent) => {
-    const link = (event.target || event.srcElement) as Window;
+    const { target } = event;
+    if (!(target instanceof Window)) return;
 
-    if (link.location.hash && hasEmptyHash(link)) {
-      return;
-    }
+    if (hasEmptyHash(target)) return;
 
-    if (typeof event.state !== 'object' || event.state === null) {
+    if (event.state.url == null) {
       window.location.reload();
     }
+
     window.location.href = event.state.url;
   };
 
-  function hasEmptyHash(link: Window) {
+  return {
+    // todo: review
+    fetch: makeRequest
+  };
+
+  function makeRequest(props: MakeRequestProps): Promise<void> {
+    if (props.fragment != null) {
+      props.request.headers.append('X-AjaxComFragment', props.fragment.substring(1));
+    }
+
+    return request({
+      beforeSend: () => config.beforeSend(props.target),
+      complete: () => {
+        if (props.fragment != null) scrollToElement(props.fragment);
+        config.complete(props.target);
+      },
+      error: (reason: string) => config.error(reason, props.target),
+      success: () => config.success(props.target),
+      request: props.request
+    });
+  }
+
+  function hasEmptyHash(target: Window): boolean {
+    if (target.location.hash == null) return true;
+
     return (
-      link.location.href.replace(link.location.hash, '') ===
+      target.location.href.replace(target.location.hash, '') ===
       location.href.replace(location.hash, '')
     );
   }
-}
-
-export async function fetch(
-  requestOptions: IFetchOptions,
-  ajaxcomCallbacks: Partial<IAjaxcomCallbacks>
-): Promise<void> {
-  const options = {
-    method: 'GET',
-    ...defaultCallbacks,
-    ...ajaxcomCallbacks,
-    ...requestOptions
-  } as Partial<IAjaxcomCallbacks & IFetchOptions>;
-
-  request(options);
-}
-
-function onError() {
-  alert('Server cannot handle your request. Please try it again or contact the administrator.');
 }

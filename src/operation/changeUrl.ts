@@ -1,40 +1,40 @@
-import { IChangeUrlOptions } from './options/changeUrlOptions';
+export interface ChangeUrlOptions {
+  readonly method: string;
+  readonly url: string;
+  readonly wait?: number;
+}
 
-export function handleChangeUrl(options: IChangeUrlOptions) {
-  let handler;
-
+export function handleChangeUrl(options: ChangeUrlOptions) {
   switch (options.method) {
     case 'push':
-      handler = () => pushUrl(options);
+      setTimeout(() => pushUrl(options), options.wait);
       break;
     case 'replace':
-      handler = () => replaceUrl(options);
+      setTimeout(() => replaceUrl(options), options.wait);
       break;
     case 'redirect':
-      handler = () => redirectToUrl(options);
+      setTimeout(() => redirectToUrl(options), options.wait);
       break;
     default:
-      throw new Error('ChangeUrl method ' + options.method + ' is not supported');
+      throw new Error(`ChangeUrl method '${options.method}' is not supported`);
   }
 
-  setTimeout(handler, options.wait);
-}
+  function pushUrl(options: ChangeUrlOptions) {
+    const currentUrlHref = window.location.href + window.location.search;
+    const currentUrlPath = window.location.pathname + window.location.search;
 
-function pushUrl(options: IChangeUrlOptions) {
-  const currentUrlHref = window.location.href + window.location.search;
-  const currentUrlPath = window.location.pathname + window.location.search;
+    if (currentUrlHref === options.url || currentUrlPath === options.url) {
+      return;
+    }
 
-  if (currentUrlHref === options.url || currentUrlPath === options.url) {
-    return;
+    history.pushState(options, '', options.url);
   }
 
-  history.pushState(options, null, options.url);
-}
+  function replaceUrl(options: ChangeUrlOptions) {
+    history.replaceState(options, '', options.url);
+  }
 
-function replaceUrl(options: IChangeUrlOptions) {
-  history.replaceState(options, null, options.url);
-}
-
-function redirectToUrl(options: IChangeUrlOptions) {
-  window.location.href = options.url;
+  function redirectToUrl(options: ChangeUrlOptions) {
+    window.location.href = options.url;
+  }
 }

@@ -3,11 +3,9 @@ export function scrollToElement(hash: string): void {
     return;
   }
 
-  let element = document.querySelector(hash);
-  if (element === null) {
-    element = document.querySelector(`[name=${hash.substr(1)}]`);
-  }
-  if (element === null) {
+  const element =
+    document.querySelector(hash) || document.querySelector(`[name=${hash.substring(1)}]`);
+  if (element == null) {
     return;
   }
 

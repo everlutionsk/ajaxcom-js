@@ -1,21 +1,44 @@
-import { IAjaxcomCallbacks } from '../options/callbacks';
-import { IFetchOptions } from '../options/fetchOptions';
-import { fetchOperations, handleOperations } from './operations';
+import { handleOperations } from './operations';
 
-export async function request(options: Partial<IAjaxcomCallbacks & IFetchOptions>): Promise<void> {
+export interface FetchOptions {
+  readonly url: string;
+  readonly method: string;
+  readonly body: string | FormData | undefined;
+  readonly headers: Headers;
+}
+
+interface RequestProps {
+  readonly request: FetchOptions;
+  readonly beforeSend: () => Promise<void>;
+  readonly error: (reason: string) => void;
+  readonly success: () => Promise<void>;
+  readonly complete: () => void;
+}
+
+export async function request(props: RequestProps): Promise<void> {
   try {
-    await options.beforeSend();
-    const response = await fetchOperations(options);
+    await props.beforeSend();
+    const response = await fetchOperations(props.request);
 
     if (!response.ok) {
-      options.error(response);
+      props.error(await response.text());
       return;
     }
 
-    await options.success();
+    await props.success();
     await handleOperations(response);
-    options.complete();
+    props.complete();
   } catch (e) {
-    options.error(e);
+    props.error(e);
   }
+}
+
+function fetchOperations(options: FetchOptions): Promise<Response> {
+  return fetch(options.url, {
+    body: options.body,
+    cache: 'no-store',
+    credentials: 'include',
+    headers: new Headers({ ...options.headers, 'X-AjaxCom': 'true', Accept: 'application/json' }),
+    method: options.method
+  });
 }

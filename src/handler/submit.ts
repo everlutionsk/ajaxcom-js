@@ -1,14 +1,11 @@
-import { IAjaxcomCallbacks } from '../options/callbacks';
-import { IFetchOptions } from '../options/fetchOptions';
-import { IAjaxcomSelectors } from '../options/selectors';
-import { addFragmentOptions } from './fragmentOptions';
-import { request } from './request';
+import { MakeRequest } from '../ajaxcom';
+import { FetchOptions } from './request';
 
-export function toHandleSubmit(options?: Partial<IAjaxcomSelectors & IAjaxcomCallbacks>) {
-  return (event: Event) => {
+export function toSubmitHandler(props: { formsSelector: string; makeRequest: MakeRequest }) {
+  return (event: SubmitEvent) => {
     const form = event.target as HTMLFormElement;
 
-    if (form.matches(options.formsSelector) === false) {
+    if (form.matches(props.formsSelector) === false) {
       return;
     }
     if (form.tagName.toUpperCase() !== 'FORM') {
@@ -16,55 +13,43 @@ export function toHandleSubmit(options?: Partial<IAjaxcomSelectors & IAjaxcomCal
     }
     event.preventDefault();
 
-    const formData = new FormData(form);
-    const fetchOptions = {
-      ...options,
-      method: form.method,
-      url: form.action ? form.action : window.location.href
-    };
+    const hashPosition = form.action.indexOf('#');
+    const fragment = hashPosition < 0 ? undefined : form.action.substring(hashPosition);
 
-    request(getFetchOptions(form, formData, fetchOptions));
+    props.makeRequest({
+      request: toRequest(form, {
+        body: undefined,
+        headers: new Headers(),
+        method: form.method,
+        url: form.action ? form.action : window.location.href
+      }),
+      target: event.target,
+      fragment
+    });
   };
 }
 
-function getFetchOptions(
-  form: HTMLFormElement,
-  formData: FormData,
-  fetchOptions: SubmitOptions
-): SubmitOptions {
-  const options =
-    form.method.toUpperCase() === 'GET'
-      ? fetchOptionsForGet(formData, fetchOptions)
-      : fetchOptionsForPost(formData, fetchOptions);
+function toRequest(form: HTMLFormElement, options: FetchOptions): FetchOptions {
+  const data = new FormData(form);
 
-  const hashPosition = form.action.indexOf('#');
-
-  if (hashPosition < 0) {
-    return options;
+  if (form.method.toUpperCase() === 'POST') {
+    return {
+      ...options,
+      body: data
+    };
   }
 
-  const fragment = form.action.substring(hashPosition);
+  if (form.method.toUpperCase() === 'GET') {
+    const query = [...data.entries()]
+      .map(pair => `${encodeURIComponent(pair[0])}=${pair[1]}`)
+      .join('&');
+    const glue = options.url.indexOf('?') === -1 ? '?' : '&';
 
-  return addFragmentOptions(options, fragment);
-}
+    return {
+      ...options,
+      url: [options.url, glue, query].join('')
+    };
+  }
 
-type SubmitOptions = Partial<IAjaxcomCallbacks & IFetchOptions>;
-
-function fetchOptionsForPost(formData: FormData, fetchOptions: SubmitOptions): SubmitOptions {
-  return {
-    ...fetchOptions,
-    body: formData
-  };
-}
-
-function fetchOptionsForGet(formData: any, fetchOptions: SubmitOptions): SubmitOptions {
-  const query = [...formData.entries()]
-    .map(pair => `${encodeURIComponent(pair[0])}=${pair[1]}`)
-    .join('&');
-  const glue = fetchOptions.url.indexOf('?') === -1 ? '?' : '&';
-
-  return {
-    ...fetchOptions,
-    url: [fetchOptions.url, glue, query].join('')
-  };
+  throw Error(`Unexpected form method: ${form.method.toUpperCase()}`);
 }
